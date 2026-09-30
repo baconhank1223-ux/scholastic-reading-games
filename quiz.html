@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>400L 奇幻樂園 - 閱讀闖關對答</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: linear-gradient(135deg, #fce4ec, #f8bbd0);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      padding: 24px;
+    }
+    header { text-align: center; margin-bottom: 24px; }
+    h1 { color: #c2185b; font-size: 1.8rem; margin-bottom: 6px; }
+    p { color: #880e4f; }
+
+    .quiz-card {
+      background: white;
+      width: 100%;
+      max-width: 550px;
+      padding: 28px;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    }
+    .question-count {
+      font-size: 0.9rem;
+      color: #888;
+      margin-bottom: 12px;
+      font-weight: bold;
+    }
+    .question-text {
+      font-size: 1.2rem;
+      color: #333;
+      margin-bottom: 20px;
+      line-height: 1.4;
+    }
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .option-btn {
+      padding: 14px 18px;
+      border: 2px solid #f48fb1;
+      border-radius: 10px;
+      background: #fff;
+      font-size: 1rem;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .option-btn:hover:not([disabled]) {
+      background: #fce4ec;
+      border-color: #e91e63;
+      transform: translateX(4px);
+    }
+    .option-btn.correct {
+      background: #c8e6c9 !important;
+      border-color: #4caf50 !important;
+      color: #2e7d32;
+      font-weight: bold;
+    }
+    .option-btn.wrong {
+      background: #ffcdd2 !important;
+      border-color: #e53935 !important;
+      color: #c62828;
+    }
+
+    .next-btn, .nav-btn {
+      margin-top: 20px;
+      width: 100%;
+      padding: 12px;
+      background: #d81b60;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      display: none;
+      text-align: center;
+      text-decoration: none;
+    }
+    .next-btn:hover, .nav-btn:hover { background: #c2185b; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>🎠 400L 奇幻樂園：閱讀問答挑戰</h1>
+    <p>回答有趣的閱讀小題目，看看你能答對幾題！</p>
+  </header>
+
+  <div class="quiz-card" id="quiz-card">
+    <div class="question-count" id="q-count">第 1 題 / 共 3 題</div>
+    <div class="question-text" id="q-text">問題載入中...</div>
+    <div class="options" id="options"></div>
+    <button class="next-btn" id="next-btn" onclick="nextQuestion()">下一題</button>
+  </div>
+
+  <div class="quiz-card" id="result-card" style="display: none; text-align: center;">
+    <h2>🏆 挑戰完成！</h2>
+    <p id="score-text" style="font-size: 1.2rem; margin: 16px 0; color: #333;"></p>
+    <a href="index.html" class="nav-btn" style="display: block;">返回遊樂園主頁</a>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        question: "在《Unicorn and Yeti》系列中，雪怪（Yeti）最喜歡吃什麼冰涼點心？",
+        options: ["熱可可", "冰淇淋 (Ice cream)", "洋芋片", "香蕉"],
+        answer: 1
+      },
+      {
+        question: "《Hello, Hedgehog!》系列的主角小刺蝟 Harry 最好的朋友是誰？",
+        options: ["天竺鼠 Boris", "小恐龍", "大笨象", "噴火龍"],
+        answer: 0
+      },
+      {
+        question: "在《Bumble and Bee》故事中，青蛙 Froggy 面對兩隻活潑蜜蜂時通常是什麼表情？",
+        options: ["很生氣想睡覺但又拿牠們沒轍", "開懷大笑", "一直在跳舞", "害怕得躲起來"],
+        answer: 0
+      }
+    ];
+
+    let currentQ = 0;
+    let score = 0;
+
+    const qCount = document.getElementById("q-count");
+    const qText = document.getElementById("q-text");
+    const optionsDiv = document.getElementById("options");
+    const nextBtn = document.getElementById("next-btn");
+    const quizCard = document.getElementById("quiz-card");
+    const resultCard = document.getElementById("result-card");
+    const scoreText = document.getElementById("score-text");
+
+    function loadQuestion() {
+      nextBtn.style.display = "none";
+      const q = questions[currentQ];
+      qCount.textContent = `第 ${currentQ + 1} 題 / 共 ${questions.length} 題`;
+      qText.textContent = q.question;
+      optionsDiv.innerHTML = "";
+
+      q.options.forEach((opt, idx) => {
+        const btn = document.createElement("button");
+        btn.className = "option-btn";
+        btn.textContent = opt;
+        btn.onclick = () => selectOption(idx, btn);
+        optionsDiv.appendChild(btn);
+      });
+    }
+
+    function selectOption(idx, selectedBtn) {
+      const q = questions[currentQ];
+      const buttons = optionsDiv.querySelectorAll(".option-btn");
+      buttons.forEach(btn => btn.disabled = true);
+
+      if (idx === q.answer) {
+        selectedBtn.classList.add("correct");
+        score++;
+      } else {
+        selectedBtn.classList.add("wrong");
+        buttons[q.answer].classList.add("correct");
+      }
+
+      nextBtn.style.display = "block";
+    }
+
+    function nextQuestion() {
+      currentQ++;
+      if (currentQ < questions.length) {
+        loadQuestion();
+      } else {
+        quizCard.style.display = "none";
+        resultCard.style.display = "block";
+        scoreText.textContent = `你答對了 ${score} / ${questions.length} 題！`;
+      }
+    }
+
+    loadQuestion();
+  </script>
+</body>
+</html>
