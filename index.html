@@ -16,11 +16,11 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      background-color: #79c5e8; /* 與主視覺天空色相近的底色 */
+      background-color: #79c5e8; /* 與天空主色相近的底色 */
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
 
-    /* 遊戲主容器：保持 1:1 比例或自適應展示 */
+    /* 遊戲主容器 */
     .game-container {
       position: relative;
       width: 100%;
@@ -34,14 +34,13 @@
       overflow: hidden;
     }
 
-    /* 點擊熱區通用樣式與發光特效 */
+    /* 按鈕通用樣式 */
     .game-btn {
       position: absolute;
       display: block;
       cursor: pointer;
       transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       z-index: 10;
-      border-radius: 20px;
       text-decoration: none;
     }
 
@@ -52,52 +51,68 @@
       display: block;
     }
 
-    /* 滑鼠懸停發光與微放大動效 */
-    .game-btn:hover {
-      transform: scale(1.04);
+    /* 三個關卡按鈕滑鼠懸停：金色/白色發光 */
+    .level-btn:hover {
+      transform: scale(1.05);
       filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.9))
               drop-shadow(0 0 30px rgba(255, 230, 0, 0.8));
     }
 
-    /* 各關卡按鈕在首頁的定位（可依實際裁切圖片尺寸微調 % 數） */
-    
-    /* 1. 藍思值 700L 探索冒險 -> 連到「連連看」 */
+    /* 三個關卡按鈕位置 */
     .btn-700l {
       top: 21%;
       left: 32%;
       width: 36%;
     }
 
-    /* 2. 藍思值 600L 水上狂歡 -> 連到「對對碰」 */
     .btn-600l {
       top: 54%;
       left: 8%;
       width: 36%;
     }
 
-    /* 3. 藍思值 400L 奇幻樂園 -> 連到「對答」 */
     .btn-400l {
       top: 60%;
       right: 8%;
       width: 36%;
+    }
+
+    /* ★ 右上方外部連結按鈕 ★ */
+    .btn-top-right {
+      top: 3.5%;
+      right: 4%;
+      width: 11%;
+      z-index: 20;
+    }
+
+    /* 右上角按鈕專屬懸停效果：橘紅溫暖光暈 + 輕微上浮放大 */
+    .btn-top-right:hover {
+      transform: scale(1.1) translateY(-3px);
+      filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.95))
+              drop-shadow(0 0 25px rgba(255, 90, 30, 0.85));
     }
   </style>
 </head>
 <body>
 
   <main class="game-container">
-    <!-- 按鈕 1：700L 探索冒險 -> 連連看 -->
-    <a href="match.html" class="game-btn btn-700l" title="進入 700L 探索冒險：連連看">
+    <!-- ★ 右上方外部連結按鈕（請將 href 換成你想連到的目標網址） ★ -->
+    <a href="https://www.tangao.com.tw/" target="_blank" rel="noopener noreferrer" class="game-btn btn-top-right" title="前往官方網站">
+      <img src="images/btn-logo.png" alt="官方連結">
+    </a>
+
+    <!-- 關卡 1：700L 探索冒險 -> 連連看 -->
+    <a href="match.html" class="game-btn level-btn btn-700l" title="700L 探索冒險：連連看">
       <img src="images/btn-700l.png" alt="700L 探索冒險">
     </a>
 
-    <!-- 按鈕 2：600L 水上狂歡 -> 對對碰 -->
-    <a href="memory.html" class="game-btn btn-600l" title="進入 600L 水上狂歡：對對碰">
+    <!-- 關卡 2：600L 水上狂歡 -> 對對碰 -->
+    <a href="memory.html" class="game-btn level-btn btn-600l" title="600L 水上狂歡：對對碰">
       <img src="images/btn-600l.png" alt="600L 水上狂歡">
     </a>
 
-    <!-- 按鈕 3：400L 奇幻樂園 -> 對答 -->
-    <a href="quiz.html" class="game-btn btn-400l" title="進入 400L 奇幻樂園：閱讀對答">
+    <!-- 關卡 3：400L 奇幻樂園 -> 對答 -->
+    <a href="quiz.html" class="game-btn level-btn btn-400l" title="400L 奇幻樂園：閱讀對答">
       <img src="images/btn-400l.png" alt="400L 奇幻樂園">
     </a>
   </main>
